@@ -85,7 +85,7 @@
   "scripts": {
     "postinstall": "npm run bower",
     "deploy:prod": "npm run build:www-release && firebase deploy -P prod",
-    "deploy:dev": "npm run build:www-release && firebase deploy -P beta",
+    "deploy:beta": "npm run build:www-release && firebase deploy -P beta",
     "start": "npm run build:www && ionic serve --nolivereload --nogulp -s --address 0.0.0.0",
     "start:ios": "npm run build:www && npm run build:ios && npm run open:ios",
     "start:android": "npm run build:www && npm run build:android && npm run run:android",

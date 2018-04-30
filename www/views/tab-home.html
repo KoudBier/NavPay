@@ -22,10 +22,13 @@
         <div class="subtitle">
           <div ng-show="wallets[0]" translate>To get started, you can buy NavCoin through our exchange partner Changelly.</div>
           <div ng-show="!wallets[0]" translate>To get started, you'll need to create a NavCoin wallet and get some NavCoin.</div>
-          <div ng-hide="isAndroid || isMobile" class="padding">
+          <div ng-hide="isAndroid || isIOS" class="padding">
             <a class="button button-standard button-primary" ng-show="wallets[0]" ng-click="openBuyLink()" translate>Buy NAV</a>
           </div>
-          <div ng-show="isAndroid || isMobile">
+          <div ng-show="isIOS" class="padding">
+            <a class="button button-standard button-primary" ng-show="wallets[0]" ng-click="openChangellyWeb()" translate>Buy NAV</a>
+          </div>
+          <div ng-show="isAndroid">
             <div translate class="padding text-bold">Buy NavCoin with:</div>
             <div class="padding">
               <a class="button button-standard button-primary" ng-show="wallets[0]" ng-click="openChangellyWeb()" translate>Credit Card</a>

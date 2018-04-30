@@ -87,6 +87,7 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
   });
 
   $scope.$on("$ionicView.afterLeave", function() {
+    console.log('Ran $ionicView.afterLeave - tab scan')
     scannerService.deactivate();
   });
 
@@ -102,6 +103,7 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
   }
 
   function activateWebRTCCamera(camera) {
+    console.log('running activateWebRTCCamera')
     // debugger;
     $scope.usingWebRtc = true;
     var video = document.getElementById('webRtcScanner')
@@ -117,6 +119,7 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
                $scope.webRtcStarted = true;
                $scope.$apply()
                $scope.videoScanInterval = setInterval(function() {
+                 console.log('running videoScanInterval')
                  // because the leave events dont fire. We dont know when to stop this
                  // So we have the internval check itself if ti should be stopped
                  // need to check the dom each time not the cached video
@@ -125,7 +128,7 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
                  } else {
                    stopWebRtcCamera();
                  }
-               }, 1000)
+               }, 2000)
              }).catch(function (err) {
                 $scope.webRtcDenied = true;
                 $scope.webRtcStarted = false;
@@ -136,6 +139,7 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
 
 
   function activate(){
+    console.log('Activate ran')
     $log.debug('Scanner activated, setting to visible...');
     $log.debug('platformInfo.cameraType', platformInfo.cameraType);
     switch(platformInfo.cameraType) {
@@ -162,6 +166,7 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
         })
         break;
       case 'webrtc':
+        console.log('Running webrtc')
         $log.debug("Using webrtc - Starting webcam")
         // $scope.currentState = scannerStates.loading;
         $scope.usingWebRtc = true

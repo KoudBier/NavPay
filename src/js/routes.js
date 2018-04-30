@@ -39,9 +39,9 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
     // USE NATIVE SCROLLING
     $ionicConfigProvider.scrolling.jsScrolling(false);
 
-    $compileProvider.debugInfoEnabled(false);
-    $logProvider.debugEnabled(false);
-    // $logProvider.debugEnabled(true);
+    // $compileProvider.debugInfoEnabled(true);
+    // $logProvider.debugEnabled(false);
+    $logProvider.debugEnabled(true);
     $provide.decorator('$log', ['$delegate', 'platformInfo',
       function($delegate, platformInfo) {
         var historicLog = historicLogProvider.$get();
@@ -1358,6 +1358,20 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
       $log.debug('Route change from:', fromState.name || '-', ' to:', toState.name);
+
+      switch (fromState.name) {
+        case 'tabs.scan':
+          scannerService.deactivate();
+          break;
+        case 'tabs.home':
+          console.log('Left tabs.home', fromState.name)
+          break;
+        default:
+          // do nothing
+      }
+
+
+      console.log('$stateChangeStart', event, toState, toParams, fromState, fromParams)
 
       if (toState.name !== 'offline' && navigator.onLine === false) {
         event.preventDefault()

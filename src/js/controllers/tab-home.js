@@ -1,16 +1,18 @@
 'use strict';
 
+var TAB_HOME_LISTENERS = [];
+
+
 angular.module('copayApp.controllers').controller('tabHomeController',
   function($rootScope, $timeout, $scope, $state, $stateParams, $ionicModal, $ionicScrollDelegate, $window, gettextCatalog, lodash, popupService, ongoingProcess, externalLinkService, latestReleaseService, profileService, walletService, configService, $log, platformInfo, storageService, txpModalService, appConfigService, startupService, addressbookService, feedbackService, bwcError, nextStepsService, buyAndSellService, homeIntegrationsService, bitpayCardService, pushNotificationsService, timeService) {
     var wallet;
-    var listeners = [];
     var notifications = [];
     $scope.externalServices = {};
     $scope.openTxpModal = txpModalService.open;
     $scope.version = $window.version;
     $scope.name = appConfigService.nameCase;
     $scope.homeTip = $stateParams.fromOnboarding;
-    $scope.buyNavTip = true
+    $scope.buyNavTip = false;
     $scope.isCordova = platformInfo.isCordova;
     $scope.isAndroid = platformInfo.isAndroid;
     $scope.isMobile = platformInfo.isMobile;
@@ -21,11 +23,9 @@ angular.module('copayApp.controllers').controller('tabHomeController',
     $scope.showRateCard = {};
     $scope.loadingWallets = true;
 
-    $scope.$on("$ionicView.afterEnter", function() {
-      startupService.ready();
-    });
-
     $scope.$on("$ionicView.beforeEnter", function(event, data) {
+      console.log('ran $ionicView.beforeEnter')
+
       if(navigator.onLine === false) {
         // We shouldn't reach here. But just encase.
         $state.go('offline');
@@ -80,6 +80,7 @@ angular.module('copayApp.controllers').controller('tabHomeController',
     });
 
     $scope.$on("$ionicView.enter", function(event, data) {
+      console.log('ran $ionicView.enter')
       updateAllWallets();
 
       addressbookService.list(function(err, ab) {
@@ -87,25 +88,32 @@ angular.module('copayApp.controllers').controller('tabHomeController',
         $scope.addressbook = ab || {};
       });
 
-      listeners = [
-        $rootScope.$on('profileBound', function(e, walletId, type, n) {
-          updateAllWallets();
-          $scope.loadingWallets = false;
-          if ($scope.recentTransactionsEnabled) getNotifications();
-        }),
-        $rootScope.$on('bwsEvent', function(e, walletId, type, n) {
-          var wallet = profileService.getWallet(walletId);
-          updateWallet(wallet);
-          if ($scope.recentTransactionsEnabled) getNotifications();
+      console.log('listerns length', TAB_HOME_LISTENERS.length)
 
-        }),
-        $rootScope.$on('Local/TxAction', function(e, walletId) {
-          $log.debug('Got action for wallet ' + walletId);
-          var wallet = profileService.getWallet(walletId);
-          updateWallet(wallet);
-          if ($scope.recentTransactionsEnabled) getNotifications();
-        })
-      ];
+      if (TAB_HOME_LISTENERS.length === 0) {
+        console.log('added event listeners')
+        TAB_HOME_LISTENERS = [
+          $rootScope.$on('profileBound', function(e, walletId, type, n) {
+            console.log('ran RootScope profileBound')
+            updateAllWallets();
+            $scope.loadingWallets = false;
+            if ($scope.recentTransactionsEnabled) getNotifications();
+          }),
+          $rootScope.$on('bwsEvent', function(e, walletId, type, n) {
+            console.log('ran RootScope bwsEvent')
+            var wallet = profileService.getWallet(walletId);
+            updateWallet(wallet);
+            if ($scope.recentTransactionsEnabled) getNotifications();
+          }),
+          $rootScope.$on('Local/TxAction', function(e, walletId) {
+            console.log('ran RootScope TxAction')
+            $log.debug('Got action for wallet ' + walletId);
+            var wallet = profileService.getWallet(walletId);
+            updateWallet(wallet);
+            if ($scope.recentTransactionsEnabled) getNotifications();
+          })
+        ];
+      }
 
 
       $scope.buyAndSellItems = buyAndSellService.getLinked();
@@ -144,11 +152,27 @@ angular.module('copayApp.controllers').controller('tabHomeController',
       }, 10);
     });
 
-    $scope.$on("$ionicView.leave", function(event, data) {
-      lodash.each(listeners, function(x) {
-        x();
-      });
+    $scope.$on("$ionicView.afterEnter", function() {
+      startupService.ready();
+      console.log('ran $ionicView.afterEnter')
     });
+
+    // $scope.$on("$ionicView.leave", function(event, data) {
+      // This never runs. So.... we made listenrs into TAB_HOME_LISTENERS
+
+      // lodash.each(listeners, function(x) {
+      //   console.log('tab-home - ionic on leave')
+      //   x();
+      // });
+    // });
+
+    $scope.$on("$destory", function() {
+      console.log('ran $destory')
+    });
+
+    $scope.$on('$ionicView.beforeLeave', function() {
+      console.log('ran $ionicView.beforeLeave')
+    })
 
     $scope.createdWithinPastDay = function(time) {
       return timeService.withinPastDay(time);
@@ -269,6 +293,7 @@ angular.module('copayApp.controllers').controller('tabHomeController',
     };
 
     var getNotifications = function() {
+      console.info('called tab-home getNotifications')
       profileService.getNotifications({
         limit: 3
       }, function(err, notifications, total) {

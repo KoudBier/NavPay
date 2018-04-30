@@ -14,6 +14,7 @@ angular.module('copayApp.controllers').controller('tabHomeController',
     $scope.isCordova = platformInfo.isCordova;
     $scope.isAndroid = platformInfo.isAndroid;
     $scope.isMobile = platformInfo.isMobile;
+    $scope.isIOS = platformInfo.isIOS;
     $scope.isIOSNativeApp = platformInfo.isCordova && platformInfo.isIOS
     $scope.isWindowsPhoneApp = platformInfo.isCordova && platformInfo.isWP;
     $scope.isNW = platformInfo.isNW;

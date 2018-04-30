@@ -24,7 +24,7 @@ ln -s ../resources/NavPay/mac/volume-icon.icns volume-icon.icns
 DMG_VOLUME_ICON="volume-icon.icns"
 DMG_BACKGROUND_IMG="dmg-background.tiff"
 
-PATH_NAME="webkitbuilds/${APP_NAME}/osx64/"
+PATH_NAME="../webkitbuilds/${APP_NAME}/osx64/"
 # you should not need to change these
 APP_EXE="${PATH_NAME}${APP_NAME}.app/Contents/MacOS/nwjs"
 

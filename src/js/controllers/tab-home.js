@@ -85,6 +85,8 @@ angular.module('copayApp.controllers').controller('tabHomeController',
         $scope.addressbook = ab || {};
       });
 
+      // Because on leave view is broken (Ionic: will not fix). We set this globally
+      // To make sure we dont keep re-binding the listeners
       if (TAB_HOME_LISTENERS.length === 0) {
         TAB_HOME_LISTENERS = [
           $rootScope.$on('profileBound', function(e, walletId, type, n) {
@@ -93,9 +95,11 @@ angular.module('copayApp.controllers').controller('tabHomeController',
             if ($scope.recentTransactionsEnabled) getNotifications();
           }),
           $rootScope.$on('bwsEvent', function(e, walletId, type, n) {
+            console.error('Ran rootScope bwsEvent')
             var wallet = profileService.getWallet(walletId);
             updateWallet(wallet);
-            if ($scope.recentTransactionsEnabled) getNotifications();
+            // If we just got a notification, we don't need to look for notifications again
+            // if ($scope.recentTransactionsEnabled) getNotifications();
           }),
           $rootScope.$on('Local/TxAction', function(e, walletId) {
             $log.debug('Got action for wallet ' + walletId);
@@ -150,6 +154,7 @@ angular.module('copayApp.controllers').controller('tabHomeController',
 
     // $scope.$on("$ionicView.leave", function(event, data) {
       // This never runs. So.... we made listenrs into TAB_HOME_LISTENERS
+      // and remove them in the routes.js
 
       // lodash.each(listeners, function(x) {
       //   console.log('tab-home - ionic on leave')

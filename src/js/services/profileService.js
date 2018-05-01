@@ -12,7 +12,7 @@ angular.module('copayApp.services')
     var errors = bwcService.getErrors();
     var usePushNotifications = isCordova && !isWindowsPhoneApp;
 
-    var UPDATE_PERIOD = 3;
+    var UPDATE_PERIOD = 5; // How often to check for new blocks / notifications
     var LAST_BLOCK = 0;
 
     root.profile = null;
@@ -124,6 +124,7 @@ angular.module('copayApp.services')
       });
 
       wallet.on('notification', function(n) {
+        console.log('wallet.on(notification)', n)
         if (n.type === 'NewBlock' && n.data.hash === LAST_BLOCK) {
           // Already handled this block.
           return null;
@@ -148,14 +149,17 @@ angular.module('copayApp.services')
         });
       });
 
+      console.log('Just before wallet.initialize()')
       wallet.initialize({
         notificationIncludeOwn: true,
+        notificationIntervalSeconds: UPDATE_PERIOD,
       }, function(err) {
+        console.log('wallet.initialize() cb')
         if (err) {
           $log.error('Could not init notifications err:', err);
           return;
         }
-        wallet.setNotificationsInterval(UPDATE_PERIOD);
+        // wallet.setNotificationsInterval(UPDATE_PERIOD);
         wallet.openWallet(function(err) {
           if (wallet.status !== true)
             $log.debug('Wallet + ' + walletId + ' status:' + wallet.status)

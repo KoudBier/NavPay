@@ -1363,10 +1363,7 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
         case 'tabs.scan':
           scannerService.deactivate();
           break;
-        case 'tabs.home':
-          console.log('Left tabs.home', fromState.name)
-          break;
-        default:
+          default:
           // do nothing
       }
 

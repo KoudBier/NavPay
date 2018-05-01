@@ -12,7 +12,8 @@ angular.module('copayApp.services')
     var errors = bwcService.getErrors();
     var usePushNotifications = isCordova && !isWindowsPhoneApp;
 
-    var UPDATE_PERIOD = 15;
+    var UPDATE_PERIOD = 3;
+    var LAST_BLOCK = 0;
 
     root.profile = null;
 
@@ -83,6 +84,8 @@ angular.module('copayApp.services')
     };
     // Adds a wallet client to profileService
     root.bindWalletClient = function(wallet, opts) {
+      $log.debug('bindWalletClient', wallet, opts)
+
       var opts = opts || {};
       var walletId = wallet.credentials.walletId;
 
@@ -121,6 +124,14 @@ angular.module('copayApp.services')
       });
 
       wallet.on('notification', function(n) {
+        if (n.type === 'NewBlock' && n.data.hash === LAST_BLOCK) {
+          // Already handled this block.
+          return null;
+        }
+
+        if (n.type === 'NewBlock') {
+          LAST_BLOCK = n.data.hash
+        }
 
         $log.debug('BWC Notification:', n);
 

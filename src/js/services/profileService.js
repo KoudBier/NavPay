@@ -12,7 +12,8 @@ angular.module('copayApp.services')
     var errors = bwcService.getErrors();
     var usePushNotifications = isCordova && !isWindowsPhoneApp;
 
-    var UPDATE_PERIOD = 15;
+    var UPDATE_PERIOD = 3;
+    var LAST_BLOCK = 0;
 
     root.profile = null;
 
@@ -83,7 +84,8 @@ angular.module('copayApp.services')
     };
     // Adds a wallet client to profileService
     root.bindWalletClient = function(wallet, opts) {
-      console.log('bindWalletClient', wallet, opts)
+      $log.debug('bindWalletClient', wallet, opts)
+
       var opts = opts || {};
       var walletId = wallet.credentials.walletId;
 
@@ -122,7 +124,14 @@ angular.module('copayApp.services')
       });
 
       wallet.on('notification', function(n) {
-        console.log('wallet on notification', n)
+        if (n.type === 'NewBlock' && n.data.hash === LAST_BLOCK) {
+          // Already handled this block.
+          return null;
+        }
+
+        if (n.type === 'NewBlock') {
+          LAST_BLOCK = n.data.hash
+        }
 
         $log.debug('BWC Notification:', n);
 
@@ -168,7 +177,6 @@ angular.module('copayApp.services')
     }, 10000);
 
     var newBwsEvent = function(n, wallet) {
-      console.error('ran newBwsEvent')
       if (wallet.cachedStatus)
         wallet.cachedStatus.isValid = false;
 
@@ -228,7 +236,6 @@ angular.module('copayApp.services')
     }
     // Used when reading wallets from the profile
     root.bindWallet = function(credentials, cb) {
-      console.log('binding wallet', credentials)
       if (!credentials.walletId || !credentials.m)
         return cb('bindWallet should receive credentials JSON');
 
@@ -885,7 +892,6 @@ angular.module('copayApp.services')
     };
 
     root.getNotifications = function(opts, cb) {
-      console.log('ran profileService getNotifications', opts)
       opts = opts || {};
 
       var TIME_STAMP = 60 * 60 * 6;

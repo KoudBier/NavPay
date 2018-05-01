@@ -139,7 +139,6 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
 
 
   function activate(){
-    console.log('Activate ran')
     $log.debug('Scanner activated, setting to visible...');
     $log.debug('platformInfo.cameraType', platformInfo.cameraType);
     switch(platformInfo.cameraType) {
@@ -259,7 +258,7 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
     $timeout(function(){
       $scope.cameraToggleActive = false;
       $log.debug('Camera toggle control deactivated.');
-    }, 1000);
+    }, 300);
 
   };
 

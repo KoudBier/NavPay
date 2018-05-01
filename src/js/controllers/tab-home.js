@@ -24,8 +24,6 @@ angular.module('copayApp.controllers').controller('tabHomeController',
     $scope.loadingWallets = true;
 
     $scope.$on("$ionicView.beforeEnter", function(event, data) {
-      console.log('ran $ionicView.beforeEnter')
-
       if(navigator.onLine === false) {
         // We shouldn't reach here. But just encase.
         $state.go('offline');
@@ -80,7 +78,6 @@ angular.module('copayApp.controllers').controller('tabHomeController',
     });
 
     $scope.$on("$ionicView.enter", function(event, data) {
-      console.log('ran $ionicView.enter')
       updateAllWallets();
 
       addressbookService.list(function(err, ab) {
@@ -88,25 +85,19 @@ angular.module('copayApp.controllers').controller('tabHomeController',
         $scope.addressbook = ab || {};
       });
 
-      console.log('listerns length', TAB_HOME_LISTENERS.length)
-
       if (TAB_HOME_LISTENERS.length === 0) {
-        console.log('added event listeners')
         TAB_HOME_LISTENERS = [
           $rootScope.$on('profileBound', function(e, walletId, type, n) {
-            console.log('ran RootScope profileBound')
             updateAllWallets();
             $scope.loadingWallets = false;
             if ($scope.recentTransactionsEnabled) getNotifications();
           }),
           $rootScope.$on('bwsEvent', function(e, walletId, type, n) {
-            console.log('ran RootScope bwsEvent')
             var wallet = profileService.getWallet(walletId);
             updateWallet(wallet);
             if ($scope.recentTransactionsEnabled) getNotifications();
           }),
           $rootScope.$on('Local/TxAction', function(e, walletId) {
-            console.log('ran RootScope TxAction')
             $log.debug('Got action for wallet ' + walletId);
             var wallet = profileService.getWallet(walletId);
             updateWallet(wallet);
@@ -166,13 +157,6 @@ angular.module('copayApp.controllers').controller('tabHomeController',
       // });
     // });
 
-    $scope.$on("$destory", function() {
-      console.log('ran $destory')
-    });
-
-    $scope.$on('$ionicView.beforeLeave', function() {
-      console.log('ran $ionicView.beforeLeave')
-    })
 
     $scope.createdWithinPastDay = function(time) {
       return timeService.withinPastDay(time);
@@ -293,7 +277,6 @@ angular.module('copayApp.controllers').controller('tabHomeController',
     };
 
     var getNotifications = function() {
-      console.info('called tab-home getNotifications')
       profileService.getNotifications({
         limit: 3
       }, function(err, notifications, total) {

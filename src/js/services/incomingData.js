@@ -58,13 +58,17 @@ angular.module('copayApp.services').factory('incomingData', function($log, $stat
         'reload': true,
         'notify': $state.current.name == 'tabs.send' ? false : true
       });
+
       // Timeout is required to enable the "Back" button
       $timeout(function() {
         if (amount) {
-          $state.transitionTo('tabs.send.confirm', {
+          var toState = privatePayment === true ? 'tabs.send.confirm-private' : 'tabs.send.confirm';
+
+          $state.transitionTo(toState, {
             toAmount: amount,
             toAddress: addr,
-            description: message
+            description: message,
+            privatePayment: privatePayment,
           });
         } else {
           $state.transitionTo('tabs.send.amount', {
@@ -88,7 +92,9 @@ angular.module('copayApp.services').factory('incomingData', function($log, $stat
       return true;
     }
 
-    data = sanitizeData(data);
+    if (data) {
+      data = sanitizeData(data);
+    }
 
     // BIP21
     if (bitcore.URI.isValid(data)) {
@@ -260,7 +266,6 @@ angular.module('copayApp.services').factory('incomingData', function($log, $stat
       'notify': $state.current.name == 'tabs.send' ? false : true
     });
     $timeout(function() {
-      console.log('incomingData goToAmountPage', privatePayment);
       $state.transitionTo('tabs.send.amount', {
         toAddress: toAddress,
         privatePayment: privatePayment,

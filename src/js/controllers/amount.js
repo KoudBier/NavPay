@@ -240,7 +240,7 @@ angular.module('copayApp.controllers').controller('amountController', function($
       });
     } else {
       var amount = $scope.showAlternativeAmount ? fromFiat(_amount) : _amount;
-      var confirmState = $scope.privatePayment === 'true' ? 'tabs.send.confirm-private' : 'tabs.send.confirm';
+      var confirmState = $scope.privatePayment === true ? 'tabs.send.confirm-private' : 'tabs.send.confirm';
       $state.transitionTo(confirmState, {
         recipientType: $scope.recipientType,
         toAmount: $scope.useSendMax ? null : (amount * unitToSatoshi).toFixed(0),
@@ -256,7 +256,6 @@ angular.module('copayApp.controllers').controller('amountController', function($
   };
 
   $scope.nextWallet =  function() {
-    console.log($scope.visibleWalletIndex + 1, $scope.wallets.length, $scope.visibleWalletIndex + 1 === $scope.wallets.length)
     if($scope.visibleWalletIndex + 1 === $scope.wallets.length) {
       // No next wallet, reset
       $scope.visibleWalletIndex = 0;

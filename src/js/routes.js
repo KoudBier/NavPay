@@ -304,6 +304,7 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
         },
         params: {
           returnRoute: null,
+          privatePayment: null,
         }
       })
       .state('scanner', {
@@ -324,6 +325,7 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
         },
         params: {
           address: null,
+          privatePayment: null,
         }
       })
       .state('tabs.settings', {
@@ -1368,7 +1370,7 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
       }
 
 
-      console.log('$stateChangeStart', event, toState, toParams, fromState, fromParams)
+      // console.log('$stateChangeStart', event, toState, toParams, fromState, fromParams)
 
       if (toState.name !== 'offline' && navigator.onLine === false) {
         event.preventDefault()

@@ -76,6 +76,7 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
         5000);
     }
     $scope.returnRoute = $state.params.returnRoute || false;
+    $scope.privatePayment = $state.params.privatePayment || false;
   });
 
   $scope.$on("$ionicView.afterEnter", function() {
@@ -87,7 +88,6 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
   });
 
   $scope.$on("$ionicView.afterLeave", function() {
-    console.log('Ran $ionicView.afterLeave - tab scan')
     scannerService.deactivate();
   });
 
@@ -103,12 +103,11 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
   }
 
   function activateWebRTCCamera(camera) {
-    console.log('running activateWebRTCCamera')
     // debugger;
     $scope.usingWebRtc = true;
     var video = document.getElementById('webRtcScanner')
     stopWebRtcCamera()
-    $log.debug('Using camera', camera)
+    $log.debug('Using WebRTCCamera', camera)
      navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: camera.deviceId } }, audio: false })
              .then(function (stream) {
                $scope.stream = stream
@@ -119,7 +118,7 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
                $scope.webRtcStarted = true;
                $scope.$apply()
                $scope.videoScanInterval = setInterval(function() {
-                 console.log('running videoScanInterval')
+                 $log.debug('running videoScanInterval')
                  // because the leave events dont fire. We dont know when to stop this
                  // So we have the internval check itself if ti should be stopped
                  // need to check the dom each time not the cached video
@@ -165,7 +164,6 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
         })
         break;
       case 'webrtc':
-        console.log('Running webrtc')
         $log.debug("Using webrtc - Starting webcam")
         // $scope.currentState = scannerStates.loading;
         $scope.usingWebRtc = true
@@ -212,10 +210,11 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
     scannerService.pausePreview();
     if ($scope.usingWebRtc) { stopWebRtcCamera() }
 
+
     if ($scope.returnRoute) {
-      $state.go($scope.returnRoute, { address: contents });
+      $state.go($scope.returnRoute, { address: contents, privatePayment: $scope.privatePayment });
     } else {
-      incomingData.redir(contents);
+      incomingData.redir(contents, $scope.privatePayment);
     }
   }
 
@@ -264,8 +263,6 @@ angular.module('copayApp.controllers').controller('tabScanController', function(
 
   var scanVideo = function(video) {
     window.requestAnimationFrame(function() {
-      console.log('scanning')
-
       var canvas = document.getElementById("hiddenCanvas");
       var ctx = canvas.getContext("2d");
       var height = video.videoHeight

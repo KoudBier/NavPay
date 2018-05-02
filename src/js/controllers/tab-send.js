@@ -164,6 +164,7 @@ angular
     };
 
     var isValidTransaction = function() {
+      console.log('isValidTransaction', $scope.formData.search, $scope.privatePayment )
       return incomingData.redir(
         $scope.formData.search,
         $scope.privatePayment,
@@ -177,9 +178,12 @@ angular
 
     $scope.openScanner = function() {
       var isWindowsPhoneApp = platformInfo.isCordova && platformInfo.isWP;
+      var privatePayment = $scope.privatePayment || false;
+
+      console.log('openScanner', privatePayment)
 
       if (!isWindowsPhoneApp) {
-        $state.go('tabs.scan', { returnRoute: 'tabs.send' });
+        $state.go('tabs.scan', { returnRoute: 'tabs.send', privatePayment: privatePayment });
         return;
       }
 
@@ -188,7 +192,7 @@ angular
           popupService.showAlert(gettextCatalog.getString('Error'), err);
           return;
         }
-        incomingData.redir(contents);
+        incomingData.redir(contents, privatePayment);
       });
     };
 
@@ -389,6 +393,9 @@ angular
           $scope.isSweeping = true;
         } else {
           $scope.formData.search = data.stateParams.address;
+          $scope.privatePayment = data.stateParams.privatePayment || false;
+          $scope.privateToggleOn = data.stateParams.privatePayment || false;
+           console.log('$ionicView.enter - $scope.privatePayment ', $scope.privatePayment )
         }
         $timeout(function() {
           $scope.searchFocus = true;

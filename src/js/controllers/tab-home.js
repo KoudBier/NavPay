@@ -95,7 +95,6 @@ angular.module('copayApp.controllers').controller('tabHomeController',
             if ($scope.recentTransactionsEnabled) getNotifications();
           }),
           $rootScope.$on('bwsEvent', function(e, walletId, type, n) {
-            console.error('Ran rootScope bwsEvent')
             var wallet = profileService.getWallet(walletId);
             updateWallet(wallet);
             // If we just got a notification, we don't need to look for notifications again

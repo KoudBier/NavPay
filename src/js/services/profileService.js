@@ -12,7 +12,7 @@ angular.module('copayApp.services')
     var errors = bwcService.getErrors();
     var usePushNotifications = isCordova && !isWindowsPhoneApp;
 
-    var UPDATE_PERIOD = 5; // How often to check for new blocks / notifications
+    var UPDATE_PERIOD = 15; // How often to check for new blocks / notifications
     var LAST_BLOCK = 0;
 
     root.profile = null;

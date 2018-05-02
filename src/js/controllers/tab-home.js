@@ -148,7 +148,6 @@ angular.module('copayApp.controllers').controller('tabHomeController',
 
     $scope.$on("$ionicView.afterEnter", function() {
       startupService.ready();
-      console.log('ran $ionicView.afterEnter')
     });
 
     // $scope.$on("$ionicView.leave", function(event, data) {

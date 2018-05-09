@@ -83,7 +83,7 @@ angular.module('copayApp.controllers').controller('tabSettingsController', funct
   }
 
   $scope.openChangellyWeb = function() {
-    var url = 'https://changelly.com/exchange/USD/NAV/100?ref_id=6c2996558a71';
+    var url = 'https://changelly.com/exchange/USD/NAV/100';
     var optIn = true;
     var title = null;
     var message = gettextCatalog.getString('Visit Changelly.com');

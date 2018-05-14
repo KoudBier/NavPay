@@ -43,10 +43,10 @@ angular.module('copayApp.controllers').controller('preferencesNavTechController'
     });
 
     $scope.viewNavTechServers = function() {
-      var url = 'https://navtechservers.com/';
+      var url = 'https://navhub.org/navtech-servers/';
       var optIn = true;
       var title = null;
-      var message = gettextCatalog.getString('Visit NavTechServers.com');
+      var message = gettextCatalog.getString('Visit navhub.org/navtech-servers/');
       var okText = gettextCatalog.getString('Open Website');
       var cancelText = gettextCatalog.getString('Go Back');
       externalLinkService.open(url, optIn, title, message, okText, cancelText);
